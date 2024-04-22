@@ -9,13 +9,19 @@
     <style>
         /* Thêm CSS tùy chỉnh tại đây nếu cần */
         body {
-            background-color: #f8f9fa; /* Màu nền */
+            min-height: 100vh; /* Đảm bảo chiều cao của body ít nhất là 100% chiều cao của viewport */
+			margin: 0;
+			padding: 0;
+			background-color: #f8f9fa; /* Màu nền của trang */
+			display: flex;
+			justify-content: center; /* Căn giữa nội dung theo chiều ngang */
+			align-items: center; /* Căn giữa nội dung theo chiều dọc */
         }
 
         /* Định dạng cho input "Ghi chú" */
         #ghi_chu {
             text-align: left; /* Canh trái nội dung */
-            height: 80px; /* Chiều cao cố định */
+            height: 100px; /* Chiều cao cố định */
             overflow-y: auto; /* Cho phép tự động xuống dòng khi đủ chiều cao */
             resize: none; /* Ngăn chặn thay đổi kích thước của textarea */
         }
@@ -24,10 +30,10 @@
 <body>
 <div class="container mt-1"> <!-- Container Bootstrap -->
     <div class="row justify-content-center"> <!-- Row Bootstrap: căn giữa nội dung -->
-        <div class="col-md-6"> <!-- Cột Bootstrap: chiều rộng 50% trên màn hình lớn -->
+        <div class="col-md-5"> <!-- Cột Bootstrap: chiều rộng 41,6% trên màn hình lớn -->
             <div class="card shadow"> <!-- Thẻ card để bao bọc nội dung -->
                 <div class="card-body">
-                    <h5 class="text-center mb-4">QUẢN LÝ CHI TIÊU</h5>
+                    <h5 class="text-center mb-2">QUẢN LÝ CHI TIÊU</h5>
                      <form id="registrationForm" onsubmit="submitForm(); return false;">
 
                         <div class="form-group">
@@ -74,7 +80,7 @@
                         <div class="form-group text-center">
                             <button class="btn btn-primary btn-block" id="ss-submit" type="submit">Gửi thông tin</button>
                         </div>
-
+						
                     </form>
                 </div>
             </div>
@@ -90,20 +96,22 @@
 <script>
 // Hàm xử lý khi submit form
 function submitForm() {
+    // Hiển thị modal loading
+    $('#loadingModal').modal('show');
+
     var noi_dung_chi = document.getElementById('noi_dung_chi').value;
     var hinh_thuc_chi = document.getElementById('hinh_thuc_chi').value;
     var hinh_thuc_tt = document.getElementById('hinh_thuc_tt').value;
     var so_tien = document.getElementById('so_tien').value;
-    var ngay_phat_sinh = document.getElementById('ngay_phat_sinh').value || getCurrentDate(); // Lấy ngày hiện tại nếu ngày phát sinh không có giá trị
+    var ngay_phat_sinh = document.getElementById('ngay_phat_sinh').value || getCurrentDate();
     var ghi_chu = document.getElementById('ghi_chu').value;
 
-    // Kiểm tra xem các trường bắt buộc có được nhập đầy đủ không
     if (!noi_dung_chi || !hinh_thuc_chi || !hinh_thuc_tt || !so_tien) {
-        alert('Vui lòng điền đầy đủ thông tin các trường bắt buộc.');
-        return; // Ngăn chặn việc gửi dữ liệu nếu thiếu thông tin
+        $('#errorModal').modal('show'); // Hiển thị modal lỗi
+        $('#loadingModal').modal('hide'); // Ẩn modal loading
+        return;
     }
 
-    // Tạo đối tượng formData để gửi dữ liệu
     var formData = {
         noi_dung_chi: noi_dung_chi,
         hinh_thuc_chi: hinh_thuc_chi,
@@ -113,7 +121,7 @@ function submitForm() {
         ghi_chu: ghi_chu
     };
 
-    console.log(formData); // Kiểm tra dữ liệu trước khi gửi đi
+    console.log(formData);
 
     fetch('https://script.google.com/macros/s/AKfycbzJI-iqo9UcL854_1yqWVZwP2hpHtPCdZ2r0AMEBykjgz6Kp2QeU3jSshLGypCGWMjU/exec', {
         method: 'POST',
@@ -121,19 +129,25 @@ function submitForm() {
     })
     .then(response => response.json())
     .then(data => {
-        console.log(data); // Kiểm tra phản hồi từ Google Script
+        console.log(data);
         if (data.result === 'success') {
-            alert('Ghi nhận thành công!');
+            $('#successModal').modal('show'); // Hiển thị modal thành công
             document.getElementById('registrationForm').reset();
         } else {
-            alert('Ghi nhận thất bại. Vui lòng thử lại.');
+            $('#errorModal').modal('show'); // Hiển thị modal lỗi
         }
     })
     .catch(error => {
         console.error('Đã xảy ra lỗi:', error);
-        alert('Đã xảy ra lỗi trong quá trình ghi nhận.');
+        $('#errorModal').modal('show'); // Hiển thị modal lỗi
+    })
+    .finally(() => {
+        // Ẩn modal loading sau khi hoàn thành
+        $('#loadingModal').modal('hide');
     });
 }
+
+
 
 // Hàm lấy ngày hiện tại dưới dạng chuỗi YYYY-MM-DD
 function getCurrentDate() {
@@ -162,5 +176,58 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
     </script>
+<!-- Modal Thành công -->
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel">Thành công!</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Ghi nhận thành công!
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Lỗi -->
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalLabel">Lỗi!</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Ghi nhận thất bại. Vui lòng thử lại.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Loading -->
+<div class="modal" id="loadingModal" tabindex="-1" role="dialog" aria-labelledby="loadingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <p class="mt-2">Đang gửi dữ liệu...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
