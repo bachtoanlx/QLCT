@@ -21,10 +21,26 @@
         /* Định dạng cho input "Ghi chú" */
         #ghi_chu {
             text-align: left; /* Canh trái nội dung */
-            height: 100px; /* Chiều cao cố định */
+            height: 80px; /* Chiều cao cố định */
             overflow-y: auto; /* Cho phép tự động xuống dòng khi đủ chiều cao */
             resize: none; /* Ngăn chặn thay đổi kích thước của textarea */
         }
+		
+		/* Điều chỉnh khoảng cách giữa label và input */
+		.form-group label {
+			margin-bottom: 1px; /* Khoảng cách dưới của label */
+			display: block; /* Hiển thị label dưới dạng block để nó nằm trên một dòng riêng */
+		}
+		.form-group input,
+		.form-group select,
+		.form-group textarea {
+        margin-bottom: 1px; /* Khoảng cách dưới của input, select, textarea */
+		}
+		
+		/* Điều chỉnh khoảng cách giữa các form-group */
+		.form-group {
+        margin-bottom: 8px; /* Khoảng cách dưới của mỗi form-group */
+		}
     </style>
 </head>
 <body>
@@ -146,10 +162,28 @@ function submitForm() {
         $('#loadingModal').modal('hide');
     });
 }
+// ĐỊNH NGHĨA HÀM ĐỂ VIẾT HOA CHỮ CÁI ĐẦU CỦA CHUỖI
+        function capitalizeFirstLetter(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
 
+        // Lắng nghe sự kiện khi người dùng nhập liệu vào trường input
+        document.addEventListener('DOMContentLoaded', function() {
+            var inputField = document.getElementById('noi_dung_chi');
 
+            inputField.addEventListener('input', function() {
+                // Lấy giá trị nhập vào từ trường input
+                var inputValue = inputField.value;
 
-// Hàm lấy ngày hiện tại dưới dạng chuỗi YYYY-MM-DD
+                // Chuyển đổi chuỗi thành dạng viết hoa chữ cái đầu
+                var capitalizedValue = capitalizeFirstLetter(inputValue);
+
+                // Đặt lại giá trị đã chuyển đổi vào trường input
+                inputField.value = capitalizedValue;
+            });
+        });
+
+// HÀM LẤY NGÀY HIỆN TẠI DƯỚI DẠNG CHUỖI YYYY-MM-DD
 function getCurrentDate() {
     var today = new Date();
     var year = today.getFullYear();
@@ -175,22 +209,18 @@ document.addEventListener('DOMContentLoaded', function() {
     setMaxDateForNgayPhatSinh();
 });
 
-    </script>
+</script>
+<!-- CÁC MODAL THÔNG BÁO KHI GỬI DỮ LIỆU -->
 <!-- Modal Thành công -->
 <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="successModalLabel">Thành công!</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                Ghi nhận thành công!
+            <div class="modal-body text-center">
+                <p class="text-success"><i class="fas fa-check-circle fa-3x mb-3"></i></p>
+                <p class="mb-0"><strong>Ghi nhận thành công!</strong></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary btn-block" data-dismiss="modal">Đóng</button>
             </div>
         </div>
     </div>
@@ -215,7 +245,7 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 </div>
-<!-- Modal Loading -->
+<!-- Modal Loading khi đang gửi dữ liệu-->
 <div class="modal" id="loadingModal" tabindex="-1" role="dialog" aria-labelledby="loadingModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
