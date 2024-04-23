@@ -3,264 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý chi tiêu cá nhân</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        /* Thêm CSS tùy chỉnh tại đây nếu cần */
-        body {
-            min-height: 100vh; /* Đảm bảo chiều cao của body ít nhất là 100% chiều cao của viewport */
-			margin: 0;
-			padding: 0;
-			background-color: #f8f9fa; /* Màu nền của trang */
-			display: flex;
-			justify-content: center; /* Căn giữa nội dung theo chiều ngang */
-			align-items: center; /* Căn giữa nội dung theo chiều dọc */
-        }
+    <title>Google Sheets Data</title>
 
-        /* Định dạng cho input "Ghi chú" */
-        #ghi_chu {
-            text-align: left; /* Canh trái nội dung */
-            height: 80px; /* Chiều cao cố định */
-            overflow-y: auto; /* Cho phép tự động xuống dòng khi đủ chiều cao */
-            resize: none; /* Ngăn chặn thay đổi kích thước của textarea */
-        }
-		
-		/* Điều chỉnh khoảng cách giữa label và input */
-		.form-group label {
-			margin-bottom: 1px; /* Khoảng cách dưới của label */
-			display: block; /* Hiển thị label dưới dạng block để nó nằm trên một dòng riêng */
-		}
-		.form-group input,
-		.form-group select,
-		.form-group textarea {
-        margin-bottom: 1px; /* Khoảng cách dưới của input, select, textarea */
-		}
-		
-		/* Điều chỉnh khoảng cách giữa các form-group */
-		.form-group {
-        margin-bottom: 8px; /* Khoảng cách dưới của mỗi form-group */
-		}
-		/* Định dạng placeholder */
-		::placeholder {
-        font-size: 14px; /* Cỡ chữ của placeholder */
+    <!-- Nhúng CSS của Bootstrap -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        /* Định dạng cho bảng dữ liệu */
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            th, td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: center;
+                vertical-align: middle;
+                width: auto; /* Đặt chiều rộng tự động cho cả thẻ th và td */
+            }
+
+            th {
+                background-color: #3498db;
+                color: white;
+            }
+
+            }
+
+            .hidden-column {
+                display: none; /* Ẩn các ô dữ liệu có class 'hidden-column' */
+            }
     </style>
 </head>
 <body>
-<div class="container mt-1"> <!-- Container Bootstrap -->
-    <div class="row justify-content-center"> <!-- Row Bootstrap: căn giữa nội dung -->
-        <div class="col-md-5"> <!-- Cột Bootstrap: chiều rộng 41,6% trên màn hình lớn -->
-            <div class="card shadow"> <!-- Thẻ card để bao bọc nội dung -->
-                <div class="card-body">
-                    <h5 class="text-center mb-2">QUẢN LÝ CHI TIÊU</h5>
-                     <form id="registrationForm" onsubmit="submitForm(); return false;">
+    <div class="container mt-5">
+        <h1 class="mb-4">Google Sheets Data</h1>
 
-                        <div class="form-group">
-                            <label for="Noidungchi">Nội dung chi:</label>
-                            <input type="text" class="form-control" placeholder="Điền nội dung chi..." id="noi_dung_chi" name="noi_dung_chi" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="Hinhthucchi">Hình thức chi:</label>
-                            <select class="form-control" id="hinh_thuc_chi" name="hinh_thuc_chi" required>
-                                <option value="" disabled selected>- Chọn hình thức -</option>
-                                <option value="Trực tiếp">Trực tiếp</option>
-                                <option value="Online">Online</option>
-                                <option value="Khác">Khác</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="Hinhthucthanhtoan">Hình thức thanh toán:</label>
-                            <select class="form-control" id="hinh_thuc_tt" name="hinh_thuc_tt" required>
-                                <option value="" disabled selected>- Chọn hình thức -</option>
-                                <option value="Tiền mặt">Tiền mặt</option>
-                                <option value="Thẻ ghi nợ">Thẻ ghi nợ</option>
-                                <option value="Chuyển khoản">Chuyển khoản</option>
-                                <option value="Khác">Khác</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="Sotien">Số tiền:</label>
-                            <input type="number" class="form-control" placeholder="Điền số tiền đã chi..." id="so_tien" name="so_tien" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="Ngayphatsinh">Ngày phát sinh:</label>
-                            <input type="date" class="form-control" placeholder="Ngày phát sinh giao dịch..." id="ngay_phat_sinh" name="ngay_phat_sinh">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="Ghichu">Ghi chú:</label>
-                            <textarea class="form-control" placeholder="" id="ghi_chu" name="ghi_chu"></textarea>
-                        </div>
-
-                        <div class="form-group text-center">
-                            <button class="btn btn-primary btn-block" id="ss-submit" type="submit">Gửi thông tin</button>
-                        </div>
-						
-                    </form>
-                </div>
+        <!-- Ô tìm kiếm với Bootstrap -->
+        <div class="input-group mb-3">
+            <input type="text" id="searchInput" class="form-control" placeholder="Nhập từ khóa tìm kiếm...">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="button" id="searchButton">Tìm kiếm</button>
             </div>
         </div>
+        
+        <!-- Bảng dữ liệu từ Google Sheets -->
+        <table class="table table-bordered" id="data-table">
+            <thead>
+                <tr id="header-row"></tr>
+            </thead>
+            <tbody id="data-body"></tbody>
+        </table>
+
+        <!-- Nút hiển thị tất cả -->
+        <button class="btn btn-primary mt-3" id="showAllButton" style="width: 100%;">Hiển thị tất cả</button>
+
     </div>
-</div>
 
-<!-- Bootstrap JS và các thư viện khác -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Nhúng JavaScript của Bootstrap (cần thiết cho một số thành phần Bootstrap) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-<script>
-// Hàm xử lý khi submit form
-function submitForm() {
-    // Hiển thị modal loading
-    $('#loadingModal').modal('show');
+    <!-- Nhúng JavaScript của Google Sheets API -->
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    var isExpanded = false; // Theo dõi trạng thái dữ liệu (đã được mở rộng hay thu gọn)
+    var columnsToHide = [2, 3]; // Chỉ số của các cột bạn muốn ẩn (tính từ 0)
 
-    var noi_dung_chi = document.getElementById('noi_dung_chi').value;
-    var hinh_thuc_chi = document.getElementById('hinh_thuc_chi').value;
-    var hinh_thuc_tt = document.getElementById('hinh_thuc_tt').value;
-    var so_tien = document.getElementById('so_tien').value;
-    var ngay_phat_sinh = document.getElementById('ngay_phat_sinh').value || getCurrentDate();
-    var ghi_chu = document.getElementById('ghi_chu').value;
+    // Load Sheets API
+    gapi.load('client', loadSheetsApi);
 
-    if (!noi_dung_chi || !hinh_thuc_chi || !hinh_thuc_tt || !so_tien) {
-        $('#errorModal').modal('show'); // Hiển thị modal lỗi
-        $('#loadingModal').modal('hide'); // Ẩn modal loading
-        return;
+    function loadSheetsApi() {
+        gapi.client.init({
+            apiKey: 'AIzaSyANdbEb_R9E-tXldeDDoMTRfFX54NECou4',
+            discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"],
+        }).then(function() {
+            fetchSheetData();
+        });
     }
 
-    var formData = {
-        noi_dung_chi: noi_dung_chi,
-        hinh_thuc_chi: hinh_thuc_chi,
-        hinh_thuc_tt: hinh_thuc_tt,
-        so_tien: so_tien,
-        ngay_phat_sinh: ngay_phat_sinh,
-        ghi_chu: ghi_chu
-    };
+    function fetchSheetData() {
+        gapi.client.sheets.spreadsheets.values.get({
+            spreadsheetId: '1OXbNo346jP4bim7gnjbvKR8wyslJ6pxOC5P_Iiik43Q',
+            range: 'Sheet1!A1:G'
+        }).then(function(response) {
+            var values = response.result.values;
 
-    console.log(formData);
+            if (values && values.length > 0) {
+                var headerRow = values[0]; // Lấy dòng đầu tiên làm tiêu đề
+                var dataRows = values.slice(1); // Lấy tất cả dòng dữ liệu (bỏ qua dòng đầu là tiêu đề)
 
-    fetch('https://script.google.com/macros/s/AKfycbzJI-iqo9UcL854_1yqWVZwP2hpHtPCdZ2r0AMEBykjgz6Kp2QeU3jSshLGypCGWMjU/exec', {
-        method: 'POST',
-        body: JSON.stringify(formData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data);
-        if (data.result === 'success') {
-            $('#successModal').modal('show'); // Hiển thị modal thành công
-            document.getElementById('registrationForm').reset();
-        } else {
-            $('#errorModal').modal('show'); // Hiển thị modal lỗi
-        }
-    })
-    .catch(error => {
-        console.error('Đã xảy ra lỗi:', error);
-        $('#errorModal').modal('show'); // Hiển thị modal lỗi
-    })
-    .finally(() => {
-        // Ẩn modal loading sau khi hoàn thành
-        $('#loadingModal').modal('hide');
-    });
-}
-// ĐỊNH NGHĨA HÀM ĐỂ VIẾT HOA CHỮ CÁI ĐẦU CỦA CHUỖI
-        function capitalizeFirstLetter(str) {
-            return str.charAt(0).toUpperCase() + str.slice(1);
-        }
+                // Hiển thị tiêu đề
+                var headerRowElement = document.getElementById('header-row');
+                headerRow.forEach(function(cellValue, index) {
+                    if (!columnsToHide.includes(index)) {
+                        var th = document.createElement('th');
+                        th.textContent = cellValue;
+                        headerRowElement.appendChild(th);
+                    }
+                });
 
-        // Lắng nghe sự kiện khi người dùng nhập liệu vào trường input
-        document.addEventListener('DOMContentLoaded', function() {
-            var inputField = document.getElementById('noi_dung_chi');
+                // Hiển thị dữ liệu ban đầu (chỉ 5 dòng đầu)
+                showDataRows(dataRows.slice(0, 5));
 
-            inputField.addEventListener('input', function() {
-                // Lấy giá trị nhập vào từ trường input
-                var inputValue = inputField.value;
-
-                // Chuyển đổi chuỗi thành dạng viết hoa chữ cái đầu
-                var capitalizedValue = capitalizeFirstLetter(inputValue);
-
-                // Đặt lại giá trị đã chuyển đổi vào trường input
-                inputField.value = capitalizedValue;
-            });
+                // Xử lý khi nhấn nút "Hiển thị tất cả" hoặc "Thu gọn"
+                var showAllButton = document.getElementById('showAllButton');
+                showAllButton.addEventListener('click', function() {
+                    if (isExpanded) {
+                        // Đang ở trạng thái đã mở rộng, cần thu gọn lại
+                        showDataRows(dataRows.slice(0, 5)); // Chỉ hiển thị 5 dòng đầu
+                        showAllButton.textContent = 'Hiển thị tất cả'; // Đổi nội dung của nút
+                        isExpanded = false; // Cập nhật trạng thái
+                    } else {
+                        // Đang ở trạng thái thu gọn, cần hiển thị tất cả
+                        showDataRows(dataRows); // Hiển thị tất cả dữ liệu
+                        showAllButton.textContent = 'Thu gọn'; // Đổi nội dung của nút
+                        isExpanded = true; // Cập nhật trạng thái
+                    }
+                });
+            } else {
+                console.log('No data found.');
+            }
+        }, function(error) {
+            console.error('Error loading Google Sheets API:', error);
         });
+    }
 
-// HÀM LẤY NGÀY HIỆN TẠI DƯỚI DẠNG CHUỖI YYYY-MM-DD
-function getCurrentDate() {
-    var today = new Date();
-    var year = today.getFullYear();
-    var month = ('0' + (today.getMonth() + 1)).slice(-2); // Tháng đếm từ 0, cần cộng thêm 1 và format về dạng 2 chữ số
-    var day = ('0' + today.getDate()).slice(-2); // Ngày format về dạng 2 chữ số
-    return year + '-' + month + '-' + day;
-}
+    function showDataRows(rows) {
+        var dataBodyElement = document.getElementById('data-body');
+        dataBodyElement.innerHTML = ''; // Xóa dữ liệu hiện có trong tbody
 
-function setMaxDateForNgayPhatSinh() {
-    var today = new Date();
-    var year = today.getFullYear();
-    var month = ('0' + (today.getMonth() + 1)).slice(-2); // Tháng đếm từ 0, cần cộng thêm 1 và format về dạng 2 chữ số
-    var day = ('0' + today.getDate()).slice(-2); // Ngày format về dạng 2 chữ số
-
-    var maxDate = year + '-' + month + '-' + day;
-
-    // Đặt thuộc tính max cho input ngày phat sinh 
-    document.getElementById('ngay_phat_sinh').setAttribute('max', maxDate);
-}
-
-// Gọi hàm setMaxDateForNgayPhatSinh() khi tài liệu được tải
-document.addEventListener('DOMContentLoaded', function() {
-    setMaxDateForNgayPhatSinh();
+        // Hiển thị dữ liệu mới
+        rows.forEach(function(row) {
+            var tr = document.createElement('tr');
+            row.forEach(function(cellValue, index) {
+                if (!columnsToHide.includes(index)) {
+                    var td = document.createElement('td');
+                    td.textContent = cellValue;
+                    tr.appendChild(td);
+                }
+            });
+            dataBodyElement.appendChild(tr);
+        });
+    }
 });
 
-</script>
-<!-- CÁC MODAL THÔNG BÁO KHI GỬI DỮ LIỆU -->
-<!-- Modal Thành công -->
-<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-body text-center">
-                <p class="text-success"><i class="fas fa-check-circle fa-3x mb-3"></i></p>
-                <p class="mb-0"><strong>Ghi nhận thành công!</strong></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary btn-block" data-dismiss="modal">Đóng</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Lỗi -->
-<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="errorModalLabel">Lỗi!</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                Ghi nhận thất bại. Vui lòng thử lại.
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal Loading khi đang gửi dữ liệu-->
-<div class="modal" id="loadingModal" tabindex="-1" role="dialog" aria-labelledby="loadingModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-body text-center">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="sr-only">Loading...</span>
-                </div>
-                <p class="mt-2">Đang gửi dữ liệu...</p>
-            </div>
-        </div>
-    </div>
-</div>
-
+    </script>
 </body>
 </html>
